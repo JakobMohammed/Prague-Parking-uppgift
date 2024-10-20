@@ -201,4 +201,101 @@ class SlottetParking
         }
     }
     
-    
+    // Hämtar ett fordon
+    static void HämtaFordon(int plats)
+    {
+        var fordon = garagePlatser[plats];
+        TimeSpan tidParkering = DateTime.Now - fordon.ParkeradTid; // Beräknar tiden som fordonet har stått parkerat
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Fordonet med regnr {fordon.Registreringsnummer} har stått parkerat i {tidParkering.Hours} timmar och {tidParkering.Minutes} minuter.");
+        garagePlatser[plats] = null; // Ta bort fordonet från parkeringen
+        Console.ResetColor();
+    }
+
+    // Hanterar sökning av fordon
+    static void HanteraSökning()
+    {
+        string regnummer = HämtaRegNummer();
+        SökFordon(regnummer);
+    }
+
+    // Söker efter ett fordon baserat på registreringsnummer
+    static void SökFordon(string regnummer)
+    {
+        for (int i = 0; i < garagePlatser.Length; i++)
+        {
+            if (garagePlatser[i] != null && garagePlatser[i].Registreringsnummer.Contains(regnummer))
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Fordonet med registreringsnummer {regnummer} finns på plats {i + 1}.");
+                Console.ResetColor();
+                return;
+            }
+        }
+
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine("Fordonet kunde inte hittas.");
+        Console.ResetColor();
+    }
+
+    // Visar parkeringsstatus
+    static void VisaParkeringsStatus()
+    {
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("Parkeringsstatus:");
+        Console.ResetColor();
+        for (int i = 0; i < garagePlatser.Length; i++)
+        {
+            if (garagePlatser[i] == null)
+            {
+                Console.ForegroundColor = ConsoleColor.Green; // Ledig plats
+                Console.WriteLine($"Plats {i + 1}: Ledig");
+            }
+            else if (garagePlatser[i].Fordonstyp == "MC" && garagePlatser[i].Registreringsnummer.Contains("|")) // Halvfull plats
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"Plats {i + 1}: Halvfull - {garagePlatser[i]}");
+            }
+            else // Full plats
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Plats {i + 1}: Fylld - {garagePlatser[i]}");
+            }
+        }
+        Console.ResetColor();
+    }
+
+    // Visar tomma platser
+    static void VisaTommaPlatser()
+    {
+        Console.WriteLine("Tomma platser:");
+        for (int i = 0; i < garagePlatser.Length; i++)
+        {
+            if (garagePlatser[i] == null)
+            {
+                Console.WriteLine($"Plats {i + 1} är ledig.");
+            }
+        }
+    }
+}
+
+// Klass som representerar ett fordon
+class Fordon
+{
+    public string Fordonstyp { get; set; }
+    public string Registreringsnummer { get; set; }
+    public DateTime ParkeradTid { get; set; } // Tidsstämpel när fordonet parkerades
+
+    public Fordon(string typAvFordon, string regnummer)
+    {
+        Fordonstyp = typAvFordon;
+        Registreringsnummer = regnummer;
+        ParkeradTid = DateTime.Now; // Automatisk tidsstämpel vid parkering
+    }
+
+    public override string ToString()
+    {
+        return $"{Fordonstyp} #{Registreringsnummer} (parkerad {ParkeradTid})";
+    }
+}

@@ -102,14 +102,14 @@ class SlottetParking
         return typAvFordon;
     }
 
-    // Hämtar registreringsnummer från användaren
+    // Hämtar registreringsnummer 
     static string HämtaRegNummer()
     {
         Console.Write("Ange registreringsnummer: ");
         return Console.ReadLine().ToUpper();
     }
 
-    // Parkera ett fordon
+    // Parkera ett fordon// 
     static void ParkeraFordon(string typAvFordon, string regnummer)
     {
         for (int i = 0; i < garagePlatser.Length; i++)

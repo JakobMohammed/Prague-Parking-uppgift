@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 
 class SlottetParking
@@ -137,5 +136,69 @@ class SlottetParking
         Console.WriteLine("Tyvärr, inga lediga platser just nu.");
         Console.ResetColor();
     }
+// Hanterar flytt av fordon
+    static void HanteraFlytt()
+    {
+        int nuvarandePlats = HämtaPlatsNummer("Ange nuvarande platsnummer (1-100): ");
+        if (!ÄrPlatsGiltig(nuvarandePlats)) return;
 
+        int nyPlats = HämtaPlatsNummer("Ange ny platsnummer (1-100): ");
+        if (ÄrFlyttGiltig(nyPlats))
+        {
+            FlyttaFordon(nuvarandePlats, nyPlats);
+        }
+    }
+
+    // Hämtar platsnummer från användaren
+    static int HämtaPlatsNummer(string fråga)
+    {
+        Console.Write(fråga);
+        return int.Parse(Console.ReadLine()) - 1;  // Justera för 0-index
+    }
+
+    // Kontroll om plats är giltig
+    static bool ÄrPlatsGiltig(int plats)
+    {
+        if (plats < 0 || plats >= garagePlatser.Length || garagePlatser[plats] == null)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Ogiltig plats eller ingen bil på platsen.");
+            Console.ResetColor();
+            return false;
+        }
+        return true;
+    }
+
+    // Kontroll om en flyttning är giltig
+    static bool ÄrFlyttGiltig(int nyPlats)
+    {
+        if (nyPlats < 0 || nyPlats >= garagePlatser.Length || garagePlatser[nyPlats] != null)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Ogiltig ny plats eller platsen är redan upptagen.");
+            Console.ResetColor();
+            return false;
+        }
+        return true;
+    }
+ // Flytta ett fordon
+    static void FlyttaFordon(int nuvarandePlats, int nyPlats)
+    {
+        garagePlatser[nyPlats] = garagePlatser[nuvarandePlats];
+        garagePlatser[nuvarandePlats] = null;
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Fordonet har flyttats från plats {nuvarandePlats + 1} till plats {nyPlats + 1}.");
+        Console.ResetColor();
+    }
+
+    // Hanterar hämtning av fordon
+    static void HanteraHämtning()
+    {
+        int plats = HämtaPlatsNummer("Ange platsnummer (1-100) för hämtning: ");
+        if (ÄrPlatsGiltig(plats))
+        {
+            HämtaFordon(plats);
+        }
+    }
+    
     
